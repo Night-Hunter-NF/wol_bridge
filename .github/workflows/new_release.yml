@@ -10,7 +10,7 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
-  build-test:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,8 +20,6 @@ jobs:
           go-version: '1.21.x'
       - name: Install dependencies
         run: go get .
-      - name: Build
-        run: go build -v ./...
       - name: Test with the Go CLI
         run: go test
       - uses: actions/upload-artifact@master
@@ -29,24 +27,61 @@ jobs:
           name: wol_bridge
           path: ${{ github.workspace }}/
           if-no-files-found: error
-  build-release-wol_bridge:
-    needs: build-test
+  build-linux:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.x'
+      - name: Build
+        run: go build -o wol_bridge_linux
+      - uses: actions/upload-artifact@master
+        with:
+          name: wol_bridge_linux
+          path:  ${{ github.workspace }}/wol_bridge_linux
+          if-no-files-found: error
+  build-windows:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.x'
+      - name: Build
+        run: go build -o wol_bridge_windows.exe
+      - uses: actions/upload-artifact@master
+        with:
+          name: wol_bridge_windows
+          path:  ${{ github.workspace }}/wol_bridge_windows.exe
+          if-no-files-found: error
+  release-wol_bridge:
+    needs: [build-linux, build-windows]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@master
         with:
-          name: wol_bridge
-          path: ${{ github.workspace }}/
+          name: wol_bridge_linux
+          path: ${{ github.workspace }}/wol_bridge_linux
+      - uses: actions/download-artifact@master
+        with:
+          name: wol_bridge_windows
+          path: ${{ github.workspace }}/wol_bridge_windows.exe
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ github.event.inputs.tag || github.ref_name }}
           tag_name: ${{ github.event.inputs.tag || github.ref_name }}
           files: |
-            wol_bridge.exe
+            wol_bridge_linux
+            wol_bridge_windows.exe
   publish-wol_bridge-latest:
-    needs: build-test
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
