@@ -78,8 +78,8 @@ jobs:
           name: ${{ github.event.inputs.tag || github.ref_name }}
           tag_name: ${{ github.event.inputs.tag || github.ref_name }}
           files: |
-            wol_bridge_linux
-            wol_bridge_windows.exe
+            ${{ github.workspace }}/wol_bridge_linux
+            ${{ github.workspace }}/wol_bridge_windows.exe
   publish-wol_bridge-latest:
     needs: test
     runs-on: ubuntu-latest
