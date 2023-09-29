@@ -27,7 +27,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: wol_bridge
-          path: wol_bridge.exe
+          path: $GITHUB_WORKSPACE/wol_bridge.exe
   build-release-wol_bridge:
     needs: build-test
     runs-on: ubuntu-latest
@@ -36,7 +36,7 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: wol_bridge
-          path: wol_bridge.exe
+          path: $GITHUB_WORKSPACE/wol_bridge.exe
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
