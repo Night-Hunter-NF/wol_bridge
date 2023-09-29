@@ -10,7 +10,7 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
-  build-release-wol_bridge:
+  build-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,6 +24,19 @@ jobs:
         run: go build -v ./...
       - name: Test with the Go CLI
         run: go test
+      - uses: actions/upload-artifact@master
+        with:
+          name: wol_bridge
+          path: /
+  build-release-wol_bridge:
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@master
+        with:
+          name: wol_bridge
+          path: /
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
@@ -31,8 +44,8 @@ jobs:
           tag_name: ${{ github.event.inputs.tag || github.ref_name }}
           files: |
             wol_bridge.exe
-          
   publish-wol_bridge-latest:
+    needs: build-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
