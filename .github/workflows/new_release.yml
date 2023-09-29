@@ -41,7 +41,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: wol_bridge_linux
-          path:  ${{ github.workspace }}/wol_bridge_linux
+          path:  wol_bridge_linux
           if-no-files-found: error
   build-windows:
     needs: test
@@ -57,7 +57,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: wol_bridge_windows
-          path:  ${{ github.workspace }}/wol_bridge_windows.exe
+          path:  wol_bridge_windows.exe
           if-no-files-found: error
   release-wol_bridge:
     needs: [build-linux, build-windows]
@@ -65,13 +65,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@master
-        with:
-          name: wol_bridge_linux
-          path: ${{ github.workspace }}/wol_bridge_linux
-      - uses: actions/download-artifact@master
-        with:
-          name: wol_bridge_windows
-          path: ${{ github.workspace }}/wol_bridge_windows.exe
+      #   with:
+      #     name: wol_bridge_linux
+      #     path: ${{ github.workspace }}/wol_bridge_linux
+      # - uses: actions/download-artifact@master
+      #   with:
+      #     name: wol_bridge_windows
+      #     path: ${{ github.workspace }}/wol_bridge_windows.exe
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
