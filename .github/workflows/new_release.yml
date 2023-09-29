@@ -28,6 +28,7 @@ jobs:
         with:
           name: wol_bridge
           path: $GITHUB_WORKSPACE/wol_bridge.exe
+          if-no-files-found: error
   build-release-wol_bridge:
     needs: build-test
     runs-on: ubuntu-latest
