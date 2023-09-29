@@ -1,0 +1,48 @@
+name: new release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'version tag'
+        required: true
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  build-release-wol_bridge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.x'
+      - name: Install dependencies
+        run: go get .
+      - name: Build
+        run: go build -v ./...
+      - name: Test with the Go CLI
+        run: go test
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ github.event.inputs.tag || {github.ref_name }}
+          files: |
+            wol_bridge.exe
+          
+  publish-wol_bridge-latest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build the image
+        run: |
+          docker build . --tag ghcr.io/n1ght-hunter/wol_bridge:latest --tag ghcr.io/n1ght-hunter/wol_bridge:${{ github.event.inputs.tag || {github.ref_name }}
+          docker push ghcr.io/n1ght-hunter/wol_bridge:latest
+          docker push ghcr.io/n1ght-hunter/wol_bridge:${{ github.event.inputs.tag || {github.ref_name }}
