@@ -27,7 +27,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          name: ${{ github.event.inputs.tag || {github.ref_name }}
+          name: ${{ github.event.inputs.tag || github.ref_name }}
           files: |
             wol_bridge.exe
           
@@ -43,6 +43,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build the image
         run: |
-          docker build . --tag ghcr.io/n1ght-hunter/wol_bridge:latest --tag ghcr.io/n1ght-hunter/wol_bridge:${{ github.event.inputs.tag || {github.ref_name }}
+          docker build . --tag ghcr.io/n1ght-hunter/wol_bridge:latest --tag ghcr.io/n1ght-hunter/wol_bridge:${{ github.event.inputs.tag || github.ref_name }}
           docker push ghcr.io/n1ght-hunter/wol_bridge:latest
-          docker push ghcr.io/n1ght-hunter/wol_bridge:${{ github.event.inputs.tag || {github.ref_name }}
+          docker push ghcr.io/n1ght-hunter/wol_bridge:${{ github.event.inputs.tag || github.ref_name }}
