@@ -13,5 +13,5 @@ jobs:
           password: ${{ secrets.GH_REGISTRY_TOKEN }}
       - name: Build the image
         run: |
-          docker build . --tag ghcr.io/n1ght-hunter/hello-docker-gcr-demo:latest
-          docker push ghcr.io/n1ght-hunter/hello-docker-gcr-demo:latest
+          docker build . --tag ghcr.io/n1ght-hunter/wol_bridge:latest
+          docker push ghcr.io/n1ght-hunter/wol_bridge:latest
