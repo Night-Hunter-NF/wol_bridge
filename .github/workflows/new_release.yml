@@ -27,7 +27,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: wol_bridge
-          path: $GITHUB_WORKSPACE/wol_bridge.exe
+          path: ${{ github.workspace }}/wol_bridge.exe
           if-no-files-found: error
   build-release-wol_bridge:
     needs: build-test
@@ -37,7 +37,7 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: wol_bridge
-          path: $GITHUB_WORKSPACE/wol_bridge.exe
+          path: ${{ github.workspace }}/wol_bridge.exe
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
