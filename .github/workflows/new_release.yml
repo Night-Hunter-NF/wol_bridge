@@ -94,6 +94,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build the image
         run: |
+          ls
           docker build . --tag ghcr.io/n1ght-hunter/wol_bridge:latest --tag ghcr.io/n1ght-hunter/wol_bridge:${{ github.event.inputs.tag || github.ref_name }}
           docker push ghcr.io/n1ght-hunter/wol_bridge:latest
           docker push ghcr.io/n1ght-hunter/wol_bridge:${{ github.event.inputs.tag || github.ref_name }}
